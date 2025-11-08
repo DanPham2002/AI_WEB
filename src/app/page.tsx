@@ -41,7 +41,7 @@ export default function Home() {
         <section className="w-full pt-12 md:pt-24 lg:pt-32">
           <div className="container space-y-10 xl:space-y-16 px-4 md:px-6">
             <div className="grid gap-4 md:grid-cols-2 md:gap-16 items-center">
-              <div className="space-y-4">
+              <div className="space-y-4 text-center md:text-left">
                 <h1 className="lg:leading-tighter text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl xl:text-[3.4rem] 2xl:text-[3.75rem] font-headline">
                   Nexus AI: Tương Lai Của Tự Động Hóa
                 </h1>

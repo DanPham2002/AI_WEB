@@ -13,6 +13,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import Image from 'next/image';
 
 const formSchema = z.object({
   prompt: z.string().min(10, {
@@ -173,7 +174,7 @@ export function Generator() {
         {!isLoading && !generatedCode && (
            <div className="flex h-full min-h-[400px] items-center justify-center rounded-lg border-2 border-dashed bg-card p-8">
              <div className="text-center">
-                <Terminal className="mx-auto h-12 w-12 text-muted-foreground" />
+                <Image src="https://picsum.photos/seed/generator/400/300" alt="Code Generation Placeholder" width={400} height={300} className="mx-auto mb-4 rounded-lg" data-ai-hint="abstract code" />
                 <h3 className="mt-4 text-lg font-semibold text-muted-foreground">Your generated code will appear here</h3>
              </div>
            </div>
