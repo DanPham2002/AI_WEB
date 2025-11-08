@@ -15,11 +15,12 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 
 const formSchema = z.object({
-  prompt: z.string().min(1, {
-    message: 'Nội dung không được để trống.',
-  }),
+  prompt: z.string(),
   type: z.enum(['react_component', 'nestjs_endpoint']).default('react_component'),
   imageDataUri: z.string().optional(),
+}).refine(data => data.prompt.length > 0 || !!data.imageDataUri, {
+    message: "Vui lòng nhập mô tả hoặc tải lên một hình ảnh.",
+    path: ["prompt"],
 });
 
 interface Message {
@@ -85,15 +86,6 @@ export function Generator() {
   };
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    if (!values.prompt && !file) {
-      toast({
-        variant: 'destructive',
-        title: 'Yêu cầu không hợp lệ',
-        description: 'Vui lòng nhập mô tả hoặc tải lên một hình ảnh.',
-      });
-      return;
-    }
-    
     setIsLoading(true);
 
     const userMessage: Message = {
@@ -103,7 +95,7 @@ export function Generator() {
       imagePreview: imagePreview || undefined,
     };
     setMessages((prev) => [...prev, userMessage]);
-    form.reset();
+    form.reset({ prompt: '', type: 'react_component', imageDataUri: undefined });
     removeFile();
 
     let fileDataUri: string | undefined = undefined;
