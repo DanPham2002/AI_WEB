@@ -45,10 +45,10 @@ export default function Home() {
                 <h1 className="lg:leading-tighter text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl xl:text-[3.4rem] 2xl:text-[3.75rem] font-headline">
                   Nexus AI: Tương Lai Của Tự Động Hóa
                 </h1>
-                <p className="mx-auto max-w-[700px] text-muted-foreground md:text-xl">
+                <p className="mx-auto max-w-[700px] text-muted-foreground md:text-xl text-center">
                   Trải nghiệm sức mạnh của trí tuệ nhân tạo để tối ưu hóa quy trình làm việc, tăng năng suất và thúc đẩy sự đổi mới.
                 </p>
-                <div className="space-x-4">
+                <div className="space-x-4 flex justify-center md:justify-start">
                   <Button asChild size="lg">
                     <Link href="/dashboard">
                       Bắt Đầu Miễn Phí <ArrowRight className="ml-2 h-5 w-5" />
