@@ -10,8 +10,7 @@ import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 
 const formSchema = z.object({
@@ -29,6 +28,13 @@ interface Message {
   isCode?: boolean;
 }
 
+const suggestionPrompts = [
+  'A pricing card component with three tiers',
+  'A contact form with name, email, and message fields',
+  'A hero section with a headline, subtitle, and CTA button',
+  'A user profile card with an avatar and details',
+];
+
 export function Generator() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -42,6 +48,8 @@ export function Generator() {
       type: 'react_component',
     },
   });
+
+  const { setValue } = form;
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -97,6 +105,11 @@ export function Generator() {
       description: 'Code copied to clipboard!',
     });
   }
+  
+  const handleSuggestionClick = (prompt: string) => {
+    setValue('prompt', prompt);
+  };
+
 
   return (
     <Card className="shadow-lg h-[80vh] flex flex-col">
@@ -115,7 +128,7 @@ export function Generator() {
              <div className="text-center text-muted-foreground">
                 <Bot size={48} className="mx-auto mb-4" />
                 <h3 className="text-lg font-semibold">Bắt đầu cuộc trò chuyện</h3>
-                <p>Hãy mô tả component bạn muốn tạo.</p>
+                <p>Hãy mô tả component bạn muốn tạo hoặc chọn một gợi ý bên dưới.</p>
              </div>
            </div>
         )}
@@ -126,7 +139,7 @@ export function Generator() {
                 <AvatarFallback><Bot /></AvatarFallback>
               </Avatar>
             )}
-            <div className={`rounded-lg p-3 max-w-xl ${message.sender === 'user' ? 'bg-primary text-primary-foreground' : 'bg-secondary'}`}>
+            <div className={`rounded-lg p-3 max-w-2xl ${message.sender === 'user' ? 'bg-primary text-primary-foreground' : 'bg-secondary'}`}>
               {message.isCode ? (
                 <div className="relative">
                   <Button variant="ghost" size="icon" onClick={() => handleCopy(message.content)} className="absolute top-2 right-2 h-7 w-7">
@@ -161,7 +174,20 @@ export function Generator() {
         )}
         <div ref={messagesEndRef} />
       </CardContent>
-      <div className="p-4 border-t">
+      <div className="p-4 border-t bg-background">
+        <div className="mb-2 flex flex-wrap gap-2">
+          {suggestionPrompts.map((prompt) => (
+            <Button
+              key={prompt}
+              variant="outline"
+              size="sm"
+              onClick={() => handleSuggestionClick(prompt)}
+              className="text-xs"
+            >
+              {prompt}
+            </Button>
+          ))}
+        </div>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="flex items-center gap-3">
             <FormField

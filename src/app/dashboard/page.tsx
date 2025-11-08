@@ -23,7 +23,7 @@ export default function DashboardPage() {
 
   if (isAuthenticated === null || isAuthenticated === false) {
     return (
-      <div className="container max-w-5xl py-8">
+      <div className="container max-w-7xl py-8">
         <Skeleton className="h-8 w-1/2 mb-4" />
         <Skeleton className="h-96 w-full" />
       </div>
@@ -31,7 +31,7 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="container max-w-5xl mx-auto py-8 px-4">
+    <div className="container max-w-7xl mx-auto py-8 px-4">
       <div className="space-y-2 mb-8">
         <h1 className="text-3xl font-bold tracking-tight font-headline">Dashboard</h1>
         <p className="text-muted-foreground">
