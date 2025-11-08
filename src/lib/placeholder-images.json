@@ -1,3 +1,34 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "hero",
+      "description": "Abstract technology background",
+      "imageUrl": "https://images.unsplash.com/photo-1604011237320-8e0506614fdf?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxhYnN0cmFjdCUyMHRlY2hub2xvZ3l8ZW58MHx8fHwxNzYyNTM4NjE0fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "abstract technology"
+    },
+    {
+      "id": "feature-react",
+      "description": "User interface code",
+      "imageUrl": "https://images.unsplash.com/photo-1726066012801-14d892021339?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHx1c2VyJTIwaW50ZXJmYWNlfGVufDB8fHx8MTc2MjU1ODI3MHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "user interface"
+    },
+    {
+      "id": "feature-nestjs",
+      "description": "Backend server code",
+      "imageUrl": "https://images.unsplash.com/photo-1643116774075-acc00caa9a7b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxzZXJ2ZXIlMjBjb2RlfGVufDB8fHx8MTc2MjUzNDEwMXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "server code"
+    },
+    {
+      "id": "feature-auth",
+      "description": "Digital security concept",
+      "imageUrl": "https://images.unsplash.com/photo-1667372283587-e1557c08aca4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxkaWdpdGFsJTIwc2VjdXJpdHl8ZW58MHx8fHwxNzYyNTU4OTU0fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "digital security"
+    },
+    {
+      "id": "feature-ai",
+      "description": "Artificial intelligence visualization",
+      "imageUrl": "https://images.unsplash.com/photo-1694903089438-bf28d4697d9a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxhcnRpZmljaWFsJTIwaW50ZWxsaWdlbmNlfGVufDB8fHx8MTc2MjQ4ODI4OHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "artificial intelligence"
+    }
+  ]
 }
