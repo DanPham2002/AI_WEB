@@ -2,11 +2,21 @@
 
 import Link from 'next/link';
 import { Bot, LogOut } from 'lucide-react';
+import { useAuth as useFirebaseAuth } from '@/firebase';
+import { signOut } from 'firebase/auth';
 import { useAuth } from '@/contexts/auth-context';
 import { Button } from '@/components/ui/button';
+import { useRouter } from 'next/navigation';
 
 export default function Header() {
-  const { isAuthenticated, logout } = useAuth();
+  const { user } = useAuth();
+  const auth = useFirebaseAuth();
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    await signOut(auth);
+    router.push('/');
+  };
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -17,12 +27,12 @@ export default function Header() {
         </Link>
         <div className="flex flex-1 items-center justify-end space-x-4">
           <nav className="flex items-center space-x-2">
-            {isAuthenticated ? (
+            {user ? (
               <>
                 <Button variant="ghost" asChild>
                   <Link href="/dashboard">Bảng điều khiển</Link>
                 </Button>
-                <Button variant="outline" size="sm" onClick={logout}>
+                <Button variant="outline" size="sm" onClick={handleLogout}>
                   <LogOut className="mr-2 h-4 w-4" /> Đăng xuất
                 </Button>
               </>

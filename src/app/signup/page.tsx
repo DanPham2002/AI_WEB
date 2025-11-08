@@ -4,11 +4,15 @@ import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { useAuth } from '@/contexts/auth-context';
+import { useAuth } from '@/firebase';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { useRouter } from 'next/navigation';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { useToast } from '@/hooks/use-toast';
+import { FirebaseError } from 'firebase/app';
 
 const formSchema = z
   .object({
@@ -22,7 +26,9 @@ const formSchema = z
   });
 
 export default function SignupPage() {
-  const { login } = useAuth();
+  const auth = useAuth();
+  const router = useRouter();
+  const { toast } = useToast();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -33,9 +39,36 @@ export default function SignupPage() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    // Mock signup and login
-    login(values.email);
+  const { formState: { isSubmitting } } = form;
+
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    try {
+      await createUserWithEmailAndPassword(auth, values.email, values.password);
+      router.push('/dashboard');
+    } catch (error) {
+      console.error("Lỗi đăng ký:", error);
+      let title = 'Lỗi Đăng Ký';
+      let description = 'Đã có lỗi không mong muốn xảy ra. Vui lòng thử lại.';
+
+      if (error instanceof FirebaseError) {
+        if (error.code === 'auth/email-already-in-use') {
+            title = 'Email Đã Tồn Tại';
+            description = 'Địa chỉ email này đã được sử dụng cho một tài khoản khác.';
+        } else if (error.code === 'auth/invalid-email') {
+            title = 'Email Không Hợp Lệ';
+            description = 'Địa chỉ email bạn nhập không hợp lệ.';
+        } else if (error.code === 'auth/weak-password') {
+            title = 'Mật Khẩu Yếu';
+            description = 'Mật khẩu phải có ít nhất 6 ký tự.';
+        }
+      }
+      
+      toast({
+        variant: 'destructive',
+        title: title,
+        description: description,
+      });
+    }
   }
 
   return (
@@ -87,8 +120,8 @@ export default function SignupPage() {
                   </FormItem>
                 )}
               />
-              <Button type="submit" className="w-full">
-                Tạo tài khoản
+              <Button type="submit" className="w-full" disabled={isSubmitting}>
+                {isSubmitting ? 'Đang tạo...' : 'Tạo tài khoản'}
               </Button>
             </form>
           </Form>

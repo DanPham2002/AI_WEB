@@ -1,32 +1,18 @@
 'use client';
 
 import { AuthContext } from '@/contexts/auth-context';
-import { useState, type ReactNode, useCallback } from 'react';
-import { useRouter } from 'next/navigation';
+import { type ReactNode } from 'react';
+import { useUser, UserHookResult } from '@/firebase';
 
-interface User {
-  identifier: string;
-}
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
-  const [user, setUser] = useState<User | null>(null);
-  const router = useRouter();
+  const { user, isUserLoading } = useUser();
 
-  const login = useCallback((identifier: string) => {
-    // This is a mock login. In a real app, you'd verify credentials.
-    setIsAuthenticated(true);
-    setUser({ identifier });
-    router.push('/dashboard');
-  }, [router]);
-
-  const logout = useCallback(() => {
-    setIsAuthenticated(false);
-    setUser(null);
-    router.push('/');
-  }, [router]);
-
-  const value = { isAuthenticated, user, login, logout };
+  const value: UserHookResult = {
+    user,
+    isUserLoading,
+    userError: null,
+  };
 
   return (
     <AuthContext.Provider value={value}>

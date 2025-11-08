@@ -36,21 +36,16 @@ const newFeatures = [
 
 
 export default function DashboardPage() {
-  const { isAuthenticated, user } = useAuth();
+  const { user, isUserLoading } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
-    // Using a timeout to allow auth state to be read from context
-    // This prevents a flash of the dashboard for unauthenticated users
-    const timer = setTimeout(() => {
-      if (isAuthenticated === false) {
-        router.push('/login');
-      }
-    }, 100);
-    return () => clearTimeout(timer);
-  }, [isAuthenticated, router]);
+    if (!isUserLoading && !user) {
+      router.push('/login');
+    }
+  }, [isUserLoading, user, router]);
 
-  if (isAuthenticated === null || isAuthenticated === false) {
+  if (isUserLoading || !user) {
     return (
       <div className="container max-w-7xl py-8">
         <Skeleton className="h-8 w-1/2 mb-4" />
@@ -64,7 +59,7 @@ export default function DashboardPage() {
       <div className="space-y-2 mb-8">
         <h1 className="text-3xl font-bold tracking-tight font-headline">Bảng điều khiển</h1>
         <p className="text-muted-foreground">
-          Chào mừng trở lại, {user?.identifier}! Tại đây bạn có thể sử dụng trình tạo mã được hỗ trợ bởi AI.
+          Chào mừng trở lại, {user.email}! Tại đây bạn có thể sử dụng trình tạo mã được hỗ trợ bởi AI.
         </p>
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
