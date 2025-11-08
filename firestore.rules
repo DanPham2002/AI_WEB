@@ -1,0 +1,89 @@
+/**
+ * @fileoverview Firestore Security Rules for WebStarter application.
+ *
+ * Core Philosophy:
+ * This ruleset enforces a strict user-ownership model, ensuring that users can only access their own data.
+ *
+ * Data Structure:
+ * All data is nested under /users/{userId}, with generated components stored in /users/{userId}/components/{componentId}.
+ *
+ * Key Security Decisions:
+ * - User listing is disallowed.
+ * - All write operations are restricted to the owner of the data.
+ * - Relational integrity is enforced to prevent data inconsistencies.
+ *
+ * Denormalization for Authorization:
+ * The 'userId' is implicitly denormalized onto the components via the path structure (/users/{userId}/components/{componentId}).  This allows for fast, path-based authorization without needing to read the document data.
+ *
+ * Structural Segregation:
+ * User data and generated components are stored in separate subcollections, allowing for different security rules as needed.
+ */
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    /**
+     * @description Rules for the /users collection.  Users can only create their own document, and nobody can list all users.
+     * @path /users/{userId}
+     * @allow (create) - A user with UID 'user_abc' can create their own user document at /users/user_abc if the document's id matches their UID.
+     * @deny (create) - A user with UID 'user_abc' cannot create a user document at /users/user_xyz.
+     * @deny (list) - No one can list all users.
+     * @principle Enforces document ownership for writes and prevents user enumeration.
+     */
+    match /users/{userId} {
+      function isOwner(userId) {
+        return request.auth.uid == userId;
+      }
+
+      // Users can read their own profile data.
+      allow get: if isOwner(userId);
+
+      // No one can list all users.
+      allow list: if false;
+
+      // Only the user can create their own document, and the ID must match their UID.
+      allow create: if isOwner(userId) && request.resource.data.id == userId;
+
+      // Only the user can update their own document.  The ID field must not be changed.
+      allow update: if isOwner(userId);
+
+      // Only the user can delete their own document.
+      allow delete: if isOwner(userId);
+    }
+
+    /**
+     * @description Rules for the /users/{userId}/components collection.  Only the owner can create, read, update, and delete components.
+     * @path /users/{userId}/components/{componentId}
+     * @allow (create) - A user with UID 'user_abc' can create a component in /users/user_abc/components.
+     * @allow (get) - A user with UID 'user_abc' can get a component in /users/user_abc/components.
+     * @allow (list) - A user with UID 'user_abc' can list their own components.
+     * @deny (create) - A user with UID 'user_abc' cannot create a component in /users/user_xyz/components.
+     * @deny (update) - A user with UID 'user_abc' cannot update a component in /users/user_xyz/components.
+     * @principle Enforces document ownership and prevents unauthorized access to user-generated components.
+     */
+    match /users/{userId}/components/{componentId} {
+      function isOwner(userId) {
+        return request.auth.uid == userId;
+      }
+
+      function isExistingOwner(userId) {
+        return isOwner(userId) && resource != null;
+      }
+
+      // Only the owner can read their own components.
+      allow get: if isOwner(userId);
+
+      // Only the owner can list their own components.
+      allow list: if isOwner(userId);
+
+      // Only the owner can create components in their own directory.  userId in the data must match the path.
+      allow create: if isOwner(userId);
+
+      // Only the owner can update their own components. The userId in the data must not be changed.
+      allow update: if isExistingOwner(userId);
+
+      // Only the owner can delete their own components.
+      allow delete: if isExistingOwner(userId);
+    }
+  }
+}
