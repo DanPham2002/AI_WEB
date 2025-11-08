@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { useAuth, useFirebase } from '@/firebase';
+import { useAuth, useFirestore } from '@/firebase';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
@@ -13,21 +13,23 @@ import { useRouter } from 'next/navigation';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { useToast } from '@/hooks/use-toast';
 import { FirebaseError } from 'firebase/app';
+import { collection, query, where, getDocs } from 'firebase/firestore';
 
 const formSchema = z.object({
-  email: z.string().email({ message: 'Vui lòng nhập một địa chỉ email hợp lệ.' }),
+  credential: z.string().min(1, { message: 'Vui lòng nhập email hoặc tên đăng nhập.' }),
   password: z.string().min(1, { message: 'Mật khẩu là bắt buộc.' }),
 });
 
 export default function LoginPage() {
   const auth = useAuth();
+  const firestore = useFirestore();
   const router = useRouter();
   const { toast } = useToast();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      email: '',
+      credential: '',
       password: '',
     },
   });
@@ -35,8 +37,39 @@ export default function LoginPage() {
   const { formState: { isSubmitting } } = form;
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
+    let email = values.credential;
+    
+    // Check if credential is a username (doesn't contain '@')
+    if (!email.includes('@')) {
+      try {
+        const usersRef = collection(firestore, 'users');
+        const q = query(usersRef, where('username', '==', values.credential));
+        const querySnapshot = await getDocs(q);
+
+        if (querySnapshot.empty) {
+          toast({
+            variant: 'destructive',
+            title: 'Tên Đăng Nhập Không Tồn Tại',
+            description: 'Tên đăng nhập bạn nhập không tồn tại. Vui lòng kiểm tra lại.',
+          });
+          return;
+        }
+
+        // Get email from the found user document
+        email = querySnapshot.docs[0].data().email;
+      } catch (error) {
+        console.error("Lỗi khi tìm người dùng:", error);
+        toast({
+          variant: 'destructive',
+          title: 'Lỗi Máy Chủ',
+          description: 'Không thể tìm thấy người dùng. Vui lòng thử lại.',
+        });
+        return;
+      }
+    }
+
     try {
-      await signInWithEmailAndPassword(auth, values.email, values.password);
+      await signInWithEmailAndPassword(auth, email, values.password);
       router.push('/dashboard');
     } catch (error) {
       console.error("Lỗi đăng nhập:", error);
@@ -78,12 +111,12 @@ export default function LoginPage() {
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
               <FormField
                 control={form.control}
-                name="email"
+                name="credential"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Email</FormLabel>
+                    <FormLabel>Email hoặc Tên đăng nhập</FormLabel>
                     <FormControl>
-                      <Input placeholder="name@example.com" {...field} />
+                      <Input placeholder="name@example.com hoặc username" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

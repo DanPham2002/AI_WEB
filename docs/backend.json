@@ -101,7 +101,7 @@
           "schema": {
             "$ref": "#/backend/entities/User"
           },
-          "description": "Stores user profile information.  The 'userId' parameter identifies the user.",
+          "description": "Stores user profile information, including username for login. The 'userId' parameter identifies the user.",
           "params": [
             {
               "name": "userId",
@@ -131,6 +131,6 @@
         }
       }
     ],
-    "reasoning": "The Firestore data structure is designed to support the WebStarter application, focusing on user-generated components. It adheres to the principles of Authorization Independence, Structural Segregation, and Access Modeling to ensure security and scalability.  \n\n**Authorization Independence:** The `GeneratedComponent` collection is structured under the `/users/{userId}/components/{componentId}` path, which implicitly grants ownership to the user identified by `{userId}`. No `get()` calls are required in the security rules to verify ownership, as it's derived directly from the path. This ensures atomic operations and simplifies debugging.\n\n**Structural Segregation:** All generated components are stored within the user-specific subcollection, guaranteeing that all documents within `/users/{userId}/components` share the same security requirements (i.e., accessible only by the owning user).\n\n**Access Modeling:** The structure utilizes path-based ownership (`/users/{userId}/components/{componentId}`) which is ideal for `User 1:N GeneratedComponent` relationships. This makes security rules straightforward and efficient.\n\nThis structure allows for secure `list` operations, as the rules can simply verify that the requesting user is the owner (`request.auth.uid == userId`)."
+    "reasoning": "The Firestore data structure is designed to support the WebStarter application, focusing on user-generated components. It adheres to the principles of Authorization Independence, Structural Segregation, and Access Modeling to ensure security and scalability.  \n\n**Authorization Independence:** The `GeneratedComponent` collection is structured under the `/users/{userId}/components/{componentId}` path, which implicitly grants ownership to the user identified by `{userId}`. No `get()` calls are required in the security rules to verify ownership, as it's derived directly from the path. This ensures atomic operations and simplifies debugging.\n\n**Structural Segregation:** All generated components are stored within the user-specific subcollection, guaranteeing that all documents within `/users/{userId}/components` share the same security requirements (i.e., accessible only by the owning user).\n\n**Access Modeling:** The structure utilizes path-based ownership (`/users/{userId}/components/{componentId}`) which is ideal for `User 1:N GeneratedComponent` relationships. This makes security rules straightforward and efficient."
   }
 }

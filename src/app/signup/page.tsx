@@ -4,18 +4,20 @@ import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { useAuth } from '@/firebase';
+import { useAuth, useFirestore } from '@/firebase';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { useRouter } from 'next/navigation';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { useToast } from '@/hooks/use-toast';
 import { FirebaseError } from 'firebase/app';
 
 const formSchema = z
   .object({
+    username: z.string().min(3, { message: 'Tên đăng nhập phải có ít nhất 3 ký tự.' }).regex(/^[a-zA-Z0-9_]+$/, 'Tên đăng nhập chỉ có thể chứa chữ cái, số và dấu gạch dưới.'),
     email: z.string().email({ message: 'Vui lòng nhập một địa chỉ email hợp lệ.' }),
     password: z.string().min(8, { message: 'Mật khẩu phải có ít nhất 8 ký tự.' }),
     confirmPassword: z.string(),
@@ -27,12 +29,14 @@ const formSchema = z
 
 export default function SignupPage() {
   const auth = useAuth();
+  const firestore = useFirestore();
   const router = useRouter();
   const { toast } = useToast();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      username: '',
       email: '',
       password: '',
       confirmPassword: '',
@@ -43,7 +47,19 @@ export default function SignupPage() {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
-      await createUserWithEmailAndPassword(auth, values.email, values.password);
+      const userCredential = await createUserWithEmailAndPassword(auth, values.email, values.password);
+      const user = userCredential.user;
+
+      // Save user info to Firestore
+      const userRef = doc(firestore, 'users', user.uid);
+      await setDoc(userRef, {
+        id: user.uid,
+        username: values.username,
+        email: values.email,
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+      });
+      
       router.push('/dashboard');
     } catch (error) {
       console.error("Lỗi đăng ký:", error);
@@ -80,7 +96,20 @@ export default function SignupPage() {
         </CardHeader>
         <CardContent>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              <FormField
+                control={form.control}
+                name="username"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Tên đăng nhập</FormLabel>
+                    <FormControl>
+                      <Input placeholder="your_username" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
               <FormField
                 control={form.control}
                 name="email"
