@@ -5,7 +5,7 @@ import { useState, type ReactNode, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 
 interface User {
-  email: string;
+  identifier: string;
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -13,10 +13,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const router = useRouter();
 
-  const login = useCallback((email: string) => {
+  const login = useCallback((identifier: string) => {
     // This is a mock login. In a real app, you'd verify credentials.
     setIsAuthenticated(true);
-    setUser({ email });
+    setUser({ identifier });
     router.push('/dashboard');
   }, [router]);
 

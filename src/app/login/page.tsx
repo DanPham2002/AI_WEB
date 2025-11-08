@@ -11,7 +11,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input';
 
 const formSchema = z.object({
-  email: z.string().email({ message: 'Please enter a valid email.' }),
+  login: z.string().min(1, { message: 'Please enter your email or username.' }),
   password: z.string().min(1, { message: 'Password is required.' }),
 });
 
@@ -21,14 +21,14 @@ export default function LoginPage() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      email: '',
+      login: '',
       password: '',
     },
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    // Mock login
-    login(values.email);
+    // Mock login. We use the 'login' field as the identifier.
+    login(values.login);
   }
 
   return (
@@ -43,12 +43,12 @@ export default function LoginPage() {
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
               <FormField
                 control={form.control}
-                name="email"
+                name="login"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Email</FormLabel>
+                    <FormLabel>Email or Username</FormLabel>
                     <FormControl>
-                      <Input placeholder="name@example.com" {...field} />
+                      <Input placeholder="name@example.com or your_username" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

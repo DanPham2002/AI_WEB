@@ -39,8 +39,26 @@
     {
       "id": "feature-reporting",
       "description": "A screen showing various charts and graphs for business intelligence",
-      "imageUrl": "https://images.unsplash.com/photo-1522071820081-009f0129c71c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxidXNpbmVzcyUyMGludGVsbGlnZW5jZXxlbnwwfHx8fDE3NjI1NzAwMjd8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1522071820081-009f0129c71c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxidXNpbmVzcyUyMGludGVsbGlnZW5jZXxlbnwwfHx8fDE3NjI1NzAwMjd8MA&ixlib-rb-4.1.0&q=80&w=1080",
       "imageHint": "business intelligence"
+    },
+    {
+      "id": "feature-3d-model",
+      "description": "A glowing wireframe of a 3D object on a computer screen.",
+      "imageUrl": "https://images.unsplash.com/photo-1635868427933-cb2b704d9b49?q=80&w=1932&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "imageHint": "3D modeling"
+    },
+    {
+      "id": "feature-animation",
+      "description": "Abstract colorful swirls of light creating an animation effect.",
+      "imageUrl": "https://images.unsplash.com/photo-1534243610993-5133bf3528b7?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "imageHint": "video animation"
+    },
+    {
+      "id": "feature-ux-tuning",
+      "description": "A futuristic heads-up display showing user interface elements and analytics.",
+      "imageUrl": "https://images.unsplash.com/photo-1581090464777-f3220bbe1b8b?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "imageHint": "UI UX"
     }
   ]
 }

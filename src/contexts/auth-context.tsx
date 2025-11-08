@@ -3,13 +3,13 @@
 import { createContext, useContext, type ReactNode } from 'react';
 
 interface User {
-  email: string;
+  identifier: string; // Can be email or username
 }
 
 interface AuthContextType {
   isAuthenticated: boolean | null;
   user: User | null;
-  login: (email: string) => void;
+  login: (identifier: string) => void;
   logout: () => void;
 }
 
