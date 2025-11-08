@@ -1,33 +1,39 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { Copy, Loader2, Sparkles, Terminal } from 'lucide-react';
+import { Copy, Loader2, Sparkles, User, Bot, Send } from 'lucide-react';
 import { handleGenerate } from '@/app/actions';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import Image from 'next/image';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 
 const formSchema = z.object({
-  prompt: z.string().min(10, {
-    message: 'Prompt must be at least 10 characters long.',
+  prompt: z.string().min(1, {
+    message: 'Prompt cannot be empty.',
   }),
-  type: z.enum(['react_component', 'nestjs_endpoint'], {
-    required_error: 'You need to select a generation type.',
-  }),
+  // Keeping type for the backend, but hiding it from the UI for the chat interface
+  type: z.enum(['react_component', 'nestjs_endpoint']).default('react_component'),
 });
 
+interface Message {
+  id: string;
+  sender: 'user' | 'ai';
+  content: string;
+  isCode?: boolean;
+}
+
 export function Generator() {
-  const [generatedCode, setGeneratedCode] = useState('');
+  const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -37,149 +43,157 @@ export function Generator() {
     },
   });
 
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages, isLoading]);
+
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
-    setGeneratedCode('');
-    const response = await handleGenerate(values);
-    setIsLoading(false);
+    
+    // Add user message to chat
+    const userMessage: Message = {
+      id: `user-${Date.now()}`,
+      sender: 'user',
+      content: values.prompt,
+    };
+    setMessages((prev) => [...prev, userMessage]);
+    form.reset();
 
+    // Get AI response
+    const response = await handleGenerate(values);
+    
     if (response.error) {
+      const errorMessage: Message = {
+        id: `ai-error-${Date.now()}`,
+        sender: 'ai',
+        content: `Rất tiếc, đã có lỗi xảy ra: ${response.error}`,
+      };
+      setMessages((prev) => [...prev, errorMessage]);
       toast({
         variant: 'destructive',
         title: 'Generation Failed',
         description: response.error,
       });
     } else if (response.code) {
-      setGeneratedCode(response.code);
-      toast({
-        title: 'Success!',
-        description: 'Your code has been generated.',
-      });
+      const aiMessage: Message = {
+        id: `ai-${Date.now()}`,
+        sender: 'ai',
+        content: response.code,
+        isCode: true,
+      };
+      setMessages((prev) => [...prev, aiMessage]);
     }
+    
+    setIsLoading(false);
   }
 
-  function handleCopy() {
-    if (!generatedCode) return;
-    navigator.clipboard.writeText(generatedCode);
+  function handleCopy(code: string) {
+    navigator.clipboard.writeText(code);
     toast({
       description: 'Code copied to clipboard!',
     });
   }
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-      <Card className="shadow-lg">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-xl font-bold font-headline">
-            <Sparkles className="h-6 w-6 text-primary" />
-            AI Code Generator
-          </CardTitle>
-          <CardDescription>
-            Describe the component or endpoint you want to create.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              <FormField
-                control={form.control}
-                name="type"
-                render={({ field }) => (
-                  <FormItem className="space-y-3">
-                    <FormLabel>Generation Type</FormLabel>
-                    <FormControl>
-                      <RadioGroup
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                        className="flex flex-col sm:flex-row sm:space-x-4 sm:space-y-0"
-                      >
-                        <FormItem className="flex items-center space-x-3 space-y-0">
-                          <FormControl>
-                            <RadioGroupItem value="react_component" />
-                          </FormControl>
-                          <FormLabel className="font-normal">React Component</FormLabel>
-                        </FormItem>
-                        <FormItem className="flex items-center space-x-3 space-y-0">
-                          <FormControl>
-                            <RadioGroupItem value="nestjs_endpoint" />
-                          </FormControl>
-                          <FormLabel className="font-normal">NestJS Endpoint</FormLabel>
-                        </FormItem>
-                      </RadioGroup>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="prompt"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Prompt</FormLabel>
-                    <FormControl>
-                      <Textarea
-                        placeholder="e.g., A pricing card component with three tiers: Free, Pro, and Enterprise."
-                        className="resize-none"
-                        rows={7}
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <Button type="submit" disabled={isLoading} className="w-full sm:w-auto">
-                {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                Generate Code
-              </Button>
-            </form>
-          </Form>
-        </CardContent>
-      </Card>
-      
-      <div className="lg:sticky lg:top-24">
-        {isLoading && (
-          <div className="flex h-full min-h-[400px] items-center justify-center rounded-lg border bg-card p-8">
-              <div className="flex items-center">
-                <Loader2 className="h-8 w-8 animate-spin text-primary" />
-                <p className="ml-4 text-muted-foreground">Generating code...</p>
-              </div>
-          </div>
-        )}
-
-        {!isLoading && generatedCode && (
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle className="text-xl font-bold font-headline">Generated Code</CardTitle>
-              <Button variant="ghost" size="icon" onClick={handleCopy}>
-                <Copy className="h-4 w-4" />
-                <span className="sr-only">Copy code</span>
-              </Button>
-            </CardHeader>
-            <CardContent>
-              <Alert className="bg-secondary">
-                  <Terminal className="h-4 w-4" />
-                  <AlertTitle>Output</AlertTitle>
-                  <AlertDescription>
-                      <pre className="mt-2 w-full rounded-md bg-slate-950 p-4 overflow-x-auto text-sm">
-                          <code className="text-white font-code">{generatedCode}</code>
-                      </pre>
-                  </AlertDescription>
-              </Alert>
-            </CardContent>
-          </Card>
-        )}
-
-        {!isLoading && !generatedCode && (
-           <div className="flex h-full min-h-[400px] items-center justify-center rounded-lg border-2 border-dashed bg-card p-8">
-             <div className="text-center">
-                <Image src="https://images.unsplash.com/photo-1599658880436-c61792e70672?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Code Generation Placeholder" width={400} height={300} className="mx-auto mb-4 rounded-lg" data-ai-hint="AI technology" />
-                <h3 className="mt-4 text-lg font-semibold text-muted-foreground">Your generated code will appear here</h3>
+    <Card className="shadow-lg h-[80vh] flex flex-col">
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2 text-xl font-bold font-headline">
+          <Sparkles className="h-6 w-6 text-primary" />
+          AI Code Assistant
+        </CardTitle>
+        <CardDescription>
+          Trò chuyện với AI để tạo mã nguồn cho component hoặc endpoint.
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="flex-1 overflow-y-auto p-4 space-y-4">
+        {messages.length === 0 && !isLoading && (
+           <div className="flex h-full items-center justify-center">
+             <div className="text-center text-muted-foreground">
+                <Bot size={48} className="mx-auto mb-4" />
+                <h3 className="text-lg font-semibold">Bắt đầu cuộc trò chuyện</h3>
+                <p>Hãy mô tả component bạn muốn tạo.</p>
              </div>
            </div>
         )}
+        {messages.map((message) => (
+          <div key={message.id} className={`flex items-start gap-3 ${message.sender === 'user' ? 'justify-end' : ''}`}>
+            {message.sender === 'ai' && (
+              <Avatar className="h-9 w-9">
+                <AvatarFallback><Bot /></AvatarFallback>
+              </Avatar>
+            )}
+            <div className={`rounded-lg p-3 max-w-xl ${message.sender === 'user' ? 'bg-primary text-primary-foreground' : 'bg-secondary'}`}>
+              {message.isCode ? (
+                <div className="relative">
+                  <Button variant="ghost" size="icon" onClick={() => handleCopy(message.content)} className="absolute top-2 right-2 h-7 w-7">
+                    <Copy className="h-4 w-4" />
+                    <span className="sr-only">Copy code</span>
+                  </Button>
+                  <pre className="mt-2 w-full rounded-md bg-slate-950 p-4 overflow-x-auto text-sm">
+                    <code className="text-white font-code">{message.content}</code>
+                  </pre>
+                </div>
+              ) : (
+                <p className="text-sm">{message.content}</p>
+              )}
+            </div>
+            {message.sender === 'user' && (
+              <Avatar className="h-9 w-9">
+                <AvatarFallback><User /></AvatarFallback>
+              </Avatar>
+            )}
+          </div>
+        ))}
+        {isLoading && (
+          <div className="flex items-start gap-3">
+             <Avatar className="h-9 w-9">
+                <AvatarFallback><Bot /></AvatarFallback>
+              </Avatar>
+            <div className="rounded-lg p-3 bg-secondary flex items-center space-x-2">
+              <Loader2 className="h-5 w-5 animate-spin" />
+              <span className="text-sm text-muted-foreground">AI đang viết mã...</span>
+            </div>
+          </div>
+        )}
+        <div ref={messagesEndRef} />
+      </CardContent>
+      <div className="p-4 border-t">
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="flex items-center gap-3">
+            <FormField
+              control={form.control}
+              name="prompt"
+              render={({ field }) => (
+                <FormItem className="flex-1">
+                  <FormControl>
+                    <Textarea
+                      placeholder="e.g., A pricing card component with three tiers..."
+                      className="resize-none"
+                      rows={1}
+                      {...field}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' && !e.shiftKey) {
+                          e.preventDefault();
+                          form.handleSubmit(onSubmit)();
+                        }
+                      }}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <Button type="submit" disabled={isLoading} size="icon">
+              <Send className="h-5 w-5" />
+              <span className="sr-only">Gửi</span>
+            </Button>
+          </form>
+        </Form>
       </div>
-    </div>
+    </Card>
   );
 }
