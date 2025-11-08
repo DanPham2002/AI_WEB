@@ -9,7 +9,6 @@ import { handleGenerate } from '@/app/actions';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
@@ -67,7 +66,7 @@ export function Generator() {
   }
 
   return (
-    <div className="grid gap-8">
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
       <Card className="shadow-lg">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-xl font-bold font-headline">
@@ -75,7 +74,7 @@ export function Generator() {
             AI Code Generator
           </CardTitle>
           <CardDescription>
-            Describe the component or endpoint you want to create, and let the AI do the heavy lifting.
+            Describe the component or endpoint you want to create.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -91,7 +90,7 @@ export function Generator() {
                       <RadioGroup
                         onValueChange={field.onChange}
                         defaultValue={field.value}
-                        className="flex flex-col space-y-1"
+                        className="flex flex-col sm:flex-row sm:space-x-4 sm:space-y-0"
                       >
                         <FormItem className="flex items-center space-x-3 space-y-0">
                           <FormControl>
@@ -121,7 +120,7 @@ export function Generator() {
                       <Textarea
                         placeholder="e.g., A pricing card component with three tiers: Free, Pro, and Enterprise."
                         className="resize-none"
-                        rows={5}
+                        rows={7}
                         {...field}
                       />
                     </FormControl>
@@ -138,35 +137,48 @@ export function Generator() {
         </CardContent>
       </Card>
       
-      {isLoading && (
-        <div className="flex items-center justify-center rounded-lg border bg-card p-8">
-            <Loader2 className="h-8 w-8 animate-spin text-primary" />
-            <p className="ml-4 text-muted-foreground">Generating code...</p>
-        </div>
-      )}
+      <div className="lg:sticky lg:top-24">
+        {isLoading && (
+          <div className="flex h-full min-h-[400px] items-center justify-center rounded-lg border bg-card p-8">
+              <div className="flex items-center">
+                <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                <p className="ml-4 text-muted-foreground">Generating code...</p>
+              </div>
+          </div>
+        )}
 
-      {generatedCode && !isLoading && (
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between">
-             <CardTitle className="text-xl font-bold font-headline">Generated Code</CardTitle>
-            <Button variant="ghost" size="icon" onClick={handleCopy}>
-              <Copy className="h-4 w-4" />
-              <span className="sr-only">Copy code</span>
-            </Button>
-          </CardHeader>
-          <CardContent>
-            <Alert className="bg-secondary">
-                <Terminal className="h-4 w-4" />
-                <AlertTitle>Output</AlertTitle>
-                <AlertDescription>
-                    <pre className="mt-2 w-full rounded-md bg-slate-950 p-4 overflow-x-auto">
-                        <code className="text-white font-code">{generatedCode}</code>
-                    </pre>
-                </AlertDescription>
-            </Alert>
-          </CardContent>
-        </Card>
-      )}
+        {!isLoading && generatedCode && (
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between">
+              <CardTitle className="text-xl font-bold font-headline">Generated Code</CardTitle>
+              <Button variant="ghost" size="icon" onClick={handleCopy}>
+                <Copy className="h-4 w-4" />
+                <span className="sr-only">Copy code</span>
+              </Button>
+            </CardHeader>
+            <CardContent>
+              <Alert className="bg-secondary">
+                  <Terminal className="h-4 w-4" />
+                  <AlertTitle>Output</AlertTitle>
+                  <AlertDescription>
+                      <pre className="mt-2 w-full rounded-md bg-slate-950 p-4 overflow-x-auto text-sm">
+                          <code className="text-white font-code">{generatedCode}</code>
+                      </pre>
+                  </AlertDescription>
+              </Alert>
+            </CardContent>
+          </Card>
+        )}
+
+        {!isLoading && !generatedCode && (
+           <div className="flex h-full min-h-[400px] items-center justify-center rounded-lg border-2 border-dashed bg-card p-8">
+             <div className="text-center">
+                <Terminal className="mx-auto h-12 w-12 text-muted-foreground" />
+                <h3 className="mt-4 text-lg font-semibold text-muted-foreground">Your generated code will appear here</h3>
+             </div>
+           </div>
+        )}
+      </div>
     </div>
   );
 }
