@@ -1,34 +1,34 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowRight, CodeXml, Server, ShieldCheck, Sparkles } from 'lucide-react';
+import { ArrowRight, Bot, BrainCircuit, Zap, ShieldCheck } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 
 const features = [
   {
-    icon: <CodeXml className="h-8 w-8 text-primary" />,
-    title: 'React UI',
-    description: 'A modern UI built with Next.js and React, featuring reusable components from shadcn/ui and a responsive layout.',
-    image: PlaceHolderImages.find(img => img.id === 'feature-react'),
+    icon: <BrainCircuit className="h-8 w-8 text-primary" />,
+    title: 'Phân Tích Thông Minh',
+    description: 'Tự động hóa việc phân tích dữ liệu phức tạp, cung cấp thông tin chi tiết và dự báo chính xác để ra quyết định tốt hơn.',
+    image: PlaceHolderImages.find(img => img.id === 'feature-analysis'),
   },
   {
-    icon: <Server className="h-8 w-8 text-primary" />,
-    title: 'NestJS API Ready',
-    description: 'A solid foundation for a RESTful API with NestJS, ready for you to build out your backend logic and endpoints.',
-    image: PlaceHolderImages.find(img => img.id === 'feature-nestjs'),
+    icon: <Zap className="h-8 w-8 text-primary" />,
+    title: 'Tối Ưu Hóa Quy Trình',
+    description: 'Xác định và loại bỏ các điểm nghẽn trong quy trình làm việc của bạn, giúp tăng hiệu suất và giảm chi phí vận hành.',
+    image: PlaceHolderImages.find(img => img.id === 'feature-optimize'),
+  },
+  {
+    icon: <Bot className="h-8 w-8 text-primary" />,
+    title: 'Trợ Lý AI Tận Tâm',
+    description: 'Tương tác với trợ lý AI của chúng tôi để tự động hóa các tác vụ lặp đi lặp lại và nhận hỗ trợ thông minh theo thời gian thực.',
+    image: PlaceHolderImages.find(img => img.id === 'feature-assistant'),
   },
   {
     icon: <ShieldCheck className="h-8 w-8 text-primary" />,
-    title: 'User Authentication',
-    description: 'Pre-configured UI and hooks for user sign-up, login, and protected routes, ready to connect to your auth middleware.',
-    image: PlaceHolderImages.find(img => img.id === 'feature-auth'),
-  },
-  {
-    icon: <Sparkles className="h-8 w-8 text-primary" />,
-    title: 'Basic Template Generation',
-    description: 'Leverage GenAI to rapidly scaffold new React components and NestJS endpoints directly from a text prompt.',
-    image: PlaceHolderImages.find(img => img.id === 'feature-ai'),
+    title: 'Bảo Mật Vượt Trội',
+    description: 'Dữ liệu của bạn được bảo vệ với các tiêu chuẩn bảo mật hàng đầu, đảm bảo an toàn và tuân thủ tuyệt đối.',
+    image: PlaceHolderImages.find(img => img.id === 'feature-security'),
   },
 ];
 
@@ -43,15 +43,15 @@ export default function Home() {
             <div className="grid gap-4 md:grid-cols-2 md:gap-16 items-center">
               <div className="space-y-4">
                 <h1 className="lg:leading-tighter text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl xl:text-[3.4rem] 2xl:text-[3.75rem] font-headline">
-                  WebStarter: Your Next.js & NestJS Launchpad
+                  Nexus AI: Tương Lai Của Tự Động Hóa
                 </h1>
                 <p className="mx-auto max-w-[700px] text-muted-foreground md:text-xl">
-                  A simple, powerful starter kit to kickstart your next full-stack application. Comes with React, NestJS structure, authentication, and AI-powered code generation.
+                  Trải nghiệm sức mạnh của trí tuệ nhân tạo để tối ưu hóa quy trình làm việc, tăng năng suất và thúc đẩy sự đổi mới.
                 </p>
                 <div className="space-x-4">
                   <Button asChild size="lg">
                     <Link href="/dashboard">
-                      Get Started <ArrowRight className="ml-2 h-5 w-5" />
+                      Bắt Đầu Miễn Phí <ArrowRight className="ml-2 h-5 w-5" />
                     </Link>
                   </Button>
                 </div>
@@ -75,10 +75,10 @@ export default function Home() {
           <div className="container px-4 md:px-6">
             <div className="flex flex-col items-center justify-center space-y-4 text-center mb-12">
               <div className="space-y-2">
-                <div className="inline-block rounded-lg bg-secondary px-3 py-1 text-sm">Core Features</div>
-                <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl font-headline">Everything You Need to Build Faster</h2>
+                <div className="inline-block rounded-lg bg-secondary px-3 py-1 text-sm">Tính Năng Vượt Trội</div>
+                <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl font-headline">Nền Tảng AI Toàn Diện Cho Doanh Nghiệp</h2>
                 <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                  Focus on your product, not the boilerplate. WebStarter provides the essential building blocks for modern web applications.
+                  Nexus AI cung cấp một bộ công cụ mạnh mẽ được thiết kế để giải quyết những thách thức lớn nhất trong hoạt động kinh doanh của bạn.
                 </p>
               </div>
             </div>

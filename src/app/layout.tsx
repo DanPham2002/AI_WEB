@@ -10,8 +10,8 @@ import { Toaster } from "@/components/ui/toaster"
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
 
 export const metadata: Metadata = {
-  title: 'WebStarter',
-  description: 'A simple starter for React (Next.js) and NestJS projects.',
+  title: 'Nexus AI - Tương Lai Của Tự Động Hóa',
+  description: 'Trải nghiệm sức mạnh của trí tuệ nhân tạo để tối ưu hóa quy trình làm việc, tăng năng suất và thúc đẩy sự đổi mới.',
 };
 
 export default function RootLayout({
