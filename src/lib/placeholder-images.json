@@ -29,6 +29,18 @@
       "description": "A digital padlock symbolizing data security",
       "imageUrl": "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxjeWJlcnNlY3VyaXR5fGVufDB8fHx8MTc2MjU1ODk1NHww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "cybersecurity"
+    },
+    {
+      "id": "feature-customization",
+      "description": "Person adjusting settings on a digital interface",
+      "imageUrl": "https://images.unsplash.com/photo-1758506126634-74970679e8d6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxjdXN0b21pemF0aW9uJTIwc2V0dGluZ3N8ZW58MHx8fHwxNzYyNTM1MjM0fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "customization settings"
+    },
+    {
+      "id": "feature-reporting",
+      "description": "A screen showing various charts and graphs for business intelligence",
+      "imageUrl": "https://images.unsplash.com/photo-1522071820081-009f0129c71c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxidXNpbmVzcyUyMGludGVsbGlnZW5jZXxlbnwwfHx8fDE3NjI1NzAwMjd8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "business intelligence"
     }
   ]
 }

@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowRight, Bot, BrainCircuit, Zap, ShieldCheck } from 'lucide-react';
+import { ArrowRight, Bot, BrainCircuit, Zap, ShieldCheck, Settings, BarChart3 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
@@ -29,6 +29,18 @@ const features = [
     title: 'Bảo Mật Vượt Trội',
     description: 'Dữ liệu của bạn được bảo vệ với các tiêu chuẩn bảo mật hàng đầu, đảm bảo an toàn và tuân thủ tuyệt đối.',
     image: PlaceHolderImages.find(img => img.id === 'feature-security'),
+  },
+  {
+    icon: <Settings className="h-8 w-8 text-primary" />,
+    title: 'Tùy Chỉnh Linh Hoạt',
+    description: 'Dễ dàng cấu hình và tùy chỉnh các mô hình AI để phù hợp với quy trình và mục tiêu kinh doanh cụ thể của bạn.',
+    image: PlaceHolderImages.find(img => img.id === 'feature-customization'),
+  },
+  {
+    icon: <BarChart3 className="h-8 w-8 text-primary" />,
+    title: 'Báo Cáo Trực Quan',
+    description: 'Tự động tạo báo cáo và biểu đồ chi tiết, giúp bạn dễ dàng theo dõi hiệu suất và đưa ra quyết định dựa trên dữ liệu.',
+    image: PlaceHolderImages.find(img => img.id === 'feature-reporting'),
   },
 ];
 
@@ -82,7 +94,7 @@ export default function Home() {
                 </p>
               </div>
             </div>
-            <div className="mx-auto grid items-start gap-8 sm:max-w-4xl sm:grid-cols-2 md:gap-12 lg:max-w-5xl lg:grid-cols-2">
+            <div className="mx-auto grid items-start gap-8 sm:max-w-4xl sm:grid-cols-2 md:gap-12 lg:max-w-none lg:grid-cols-3">
               {features.map((feature, index) => (
                 <Card key={index} className="h-full transform transition-transform duration-300 hover:scale-105 hover:shadow-xl">
                   <CardHeader className="flex flex-row items-center gap-4 pb-4">
