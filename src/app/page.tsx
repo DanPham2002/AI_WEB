@@ -62,7 +62,7 @@ export default function Home() {
                 </p>
                 <div className="space-x-4 flex justify-center md:justify-start">
                   <Button asChild size="lg">
-                    <Link href="/dashboard">
+                    <Link href="/signup">
                       Bắt Đầu Miễn Phí <ArrowRight className="ml-2 h-5 w-5" />
                     </Link>
                   </Button>
