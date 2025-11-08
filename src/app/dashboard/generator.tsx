@@ -174,7 +174,7 @@ export function Generator() {
         {!isLoading && !generatedCode && (
            <div className="flex h-full min-h-[400px] items-center justify-center rounded-lg border-2 border-dashed bg-card p-8">
              <div className="text-center">
-                <Image src="https://images.unsplash.com/photo-1697577418970-95d99b5a55cf?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=996" alt="Code Generation Placeholder" width={400} height={300} className="mx-auto mb-4 rounded-lg" data-ai-hint="abstract technology" />
+                <Image src="https://images.unsplash.com/photo-1599658880436-c61792e70672?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Code Generation Placeholder" width={400} height={300} className="mx-auto mb-4 rounded-lg" data-ai-hint="AI technology" />
                 <h3 className="mt-4 text-lg font-semibold text-muted-foreground">Your generated code will appear here</h3>
              </div>
            </div>
