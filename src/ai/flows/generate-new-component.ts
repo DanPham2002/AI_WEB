@@ -14,6 +14,7 @@ import {z} from 'genkit';
 const GenerateNewComponentInputSchema = z.object({
   prompt: z.string().describe('A text prompt describing the desired component or endpoint.'),
   type: z.enum(['react_component', 'nestjs_endpoint']).describe('The type of code to generate.'),
+  imageDataUri: z.optional(z.string()).describe("An optional image of a component, as a data URI that must include a MIME type and use Base64 encoding. Expected format: 'data:<mimetype>;base64,<encoded_data>'."),
 });
 export type GenerateNewComponentInput = z.infer<typeof GenerateNewComponentInputSchema>;
 
@@ -33,6 +34,11 @@ const prompt = ai.definePrompt({
   prompt: `You are a code generation expert specializing in React components and NestJS endpoints.
 
 You will generate code based on the user's prompt. Ensure the code is valid and follows best practices.
+
+{{#if imageDataUri}}
+The user has provided an image for context. Use it as a visual reference for the code you need to generate.
+Image: {{media url=imageDataUri}}
+{{/if}}
 
 Type: {{type}}
 Prompt: {{{prompt}}}

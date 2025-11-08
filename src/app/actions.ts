@@ -6,6 +6,7 @@ import { generateNewComponent, type GenerateNewComponentInput } from '@/ai/flows
 const GenerateSchema = z.object({
   prompt: z.string().min(10, 'Prompt must be at least 10 characters.'),
   type: z.enum(['react_component', 'nestjs_endpoint']),
+  imageDataUri: z.string().optional(),
 });
 
 type HandleGenerateResponse = {
@@ -23,6 +24,7 @@ export async function handleGenerate(values: z.infer<typeof GenerateSchema>): Pr
   const input: GenerateNewComponentInput = {
     prompt: validatedFields.data.prompt,
     type: validatedFields.data.type,
+    imageDataUri: validatedFields.data.imageDataUri,
   };
 
   try {

@@ -1,10 +1,11 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
+import Image from 'next/image';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { Copy, Loader2, Sparkles, User, Bot, Send } from 'lucide-react';
+import { Copy, Loader2, Sparkles, User, Bot, Send, Paperclip, X } from 'lucide-react';
 import { handleGenerate } from '@/app/actions';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
@@ -17,8 +18,8 @@ const formSchema = z.object({
   prompt: z.string().min(1, {
     message: 'Nội dung không được để trống.',
   }),
-  // Keeping type for the backend, but hiding it from the UI for the chat interface
   type: z.enum(['react_component', 'nestjs_endpoint']).default('react_component'),
+  imageDataUri: z.string().optional(),
 });
 
 interface Message {
@@ -26,6 +27,7 @@ interface Message {
   sender: 'user' | 'ai';
   content: string;
   isCode?: boolean;
+  imagePreview?: string;
 }
 
 const suggestionPrompts = [
@@ -38,8 +40,11 @@ const suggestionPrompts = [
 export function Generator() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [file, setFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
   const { toast } = useToast();
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -59,20 +64,58 @@ export function Generator() {
     scrollToBottom();
   }, [messages, isLoading]);
 
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = event.target.files?.[0];
+    if (selectedFile) {
+      setFile(selectedFile);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(selectedFile);
+    }
+  };
+
+  const removeFile = () => {
+    setFile(null);
+    setImagePreview(null);
+    if(fileInputRef.current) {
+        fileInputRef.current.value = '';
+    }
+  };
+
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    setIsLoading(true);
+    if (!values.prompt && !file) {
+      toast({
+        variant: 'destructive',
+        title: 'Yêu cầu không hợp lệ',
+        description: 'Vui lòng nhập mô tả hoặc tải lên một hình ảnh.',
+      });
+      return;
+    }
     
-    // Add user message to chat
+    setIsLoading(true);
+
     const userMessage: Message = {
       id: `user-${Date.now()}`,
       sender: 'user',
       content: values.prompt,
+      imagePreview: imagePreview || undefined,
     };
     setMessages((prev) => [...prev, userMessage]);
     form.reset();
+    removeFile();
 
-    // Get AI response
-    const response = await handleGenerate(values);
+    let fileDataUri: string | undefined = undefined;
+    if (file) {
+      fileDataUri = await new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result as string);
+        reader.readAsDataURL(file);
+      });
+    }
+
+    const response = await handleGenerate({ ...values, imageDataUri: fileDataUri });
     
     if (response.error) {
       const errorMessage: Message = {
@@ -119,7 +162,7 @@ export function Generator() {
           Trợ Lý Mã AI
         </CardTitle>
         <CardDescription>
-          Trò chuyện với AI để tạo mã nguồn cho component hoặc endpoint.
+          Trò chuyện với AI để tạo mã nguồn cho component hoặc endpoint. Tải ảnh lên để có kết quả trực quan hơn.
         </CardDescription>
       </CardHeader>
       <CardContent className="flex-1 overflow-y-auto p-4 space-y-4">
@@ -128,7 +171,7 @@ export function Generator() {
              <div className="text-center text-muted-foreground">
                 <Bot size={48} className="mx-auto mb-4" />
                 <h3 className="text-lg font-semibold">Bắt đầu cuộc trò chuyện</h3>
-                <p>Hãy mô tả component bạn muốn tạo hoặc chọn một gợi ý bên dưới.</p>
+                <p>Hãy mô tả component bạn muốn tạo, tải lên một ảnh, hoặc chọn một gợi ý bên dưới.</p>
              </div>
            </div>
         )}
@@ -140,6 +183,11 @@ export function Generator() {
               </Avatar>
             )}
             <div className={`rounded-lg p-3 max-w-2xl ${message.sender === 'user' ? 'bg-primary text-primary-foreground' : 'bg-secondary'}`}>
+              {message.imagePreview && (
+                 <div className="mb-2">
+                    <Image src={message.imagePreview} alt="Image preview" width={200} height={200} className="rounded-md" />
+                 </div>
+              )}
               {message.isCode ? (
                 <div className="relative">
                   <Button variant="ghost" size="icon" onClick={() => handleCopy(message.content)} className="absolute top-2 right-2 h-7 w-7">
@@ -189,7 +237,15 @@ export function Generator() {
           ))}
         </div>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="flex items-center gap-3">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="flex items-end gap-3">
+            {imagePreview && (
+                <div className="relative">
+                    <Image src={imagePreview} alt="Preview" width={60} height={60} className="rounded-md object-cover"/>
+                    <Button variant="ghost" size="icon" className="absolute -top-2 -right-2 h-6 w-6 rounded-full bg-destructive text-destructive-foreground" onClick={removeFile}>
+                        <X className="h-4 w-4" />
+                    </Button>
+                </div>
+            )}
             <FormField
               control={form.control}
               name="prompt"
@@ -213,6 +269,11 @@ export function Generator() {
                 </FormItem>
               )}
             />
+            <input type="file" ref={fileInputRef} onChange={handleFileChange} accept="image/*" className="hidden" />
+            <Button type="button" variant="outline" size="icon" onClick={() => fileInputRef.current?.click()} disabled={isLoading}>
+                <Paperclip className="h-5 w-5" />
+                <span className="sr-only">Đính kèm ảnh</span>
+            </Button>
             <Button type="submit" disabled={isLoading} size="icon">
               <Send className="h-5 w-5" />
               <span className="sr-only">Gửi</span>
