@@ -1,4 +1,4 @@
 import { config } from 'dotenv';
 config();
 
-import '@/ai/flows/generate-new-component.ts';
+import '@/ai/flows/conversational-flow.ts';

@@ -6,7 +6,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { Copy, Loader2, Sparkles, User, Bot, Send, Paperclip, X } from 'lucide-react';
-import { handleGenerate } from '@/app/actions';
+import { handleChat } from '@/app/actions';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { Textarea } from '@/components/ui/textarea';
@@ -16,7 +16,6 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 
 const formSchema = z.object({
   prompt: z.string(),
-  type: z.enum(['react_component', 'nestjs_endpoint']).default('react_component'),
   imageDataUri: z.string().optional(),
 }).refine(data => data.prompt.length > 0 || !!data.imageDataUri, {
     message: "Vui lòng nhập mô tả hoặc tải lên một hình ảnh.",
@@ -34,8 +33,8 @@ interface Message {
 const suggestionPrompts = [
   'Thẻ giá sản phẩm với ba gói',
   'Biểu mẫu liên hệ với tên, email và tin nhắn',
-  'Phần hero với tiêu đề và nút kêu gọi hành động',
-  'Thẻ hồ sơ người dùng với ảnh đại diện và chi tiết',
+  'Sự khác biệt giữa `let`, `const`, và `var` trong JavaScript là gì?',
+  'Tạo một thành phần React cho thẻ hồ sơ người dùng',
 ];
 
 export function Generator() {
@@ -51,7 +50,6 @@ export function Generator() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       prompt: '',
-      type: 'react_component',
     },
   });
 
@@ -95,7 +93,7 @@ export function Generator() {
       imagePreview: imagePreview || undefined,
     };
     setMessages((prev) => [...prev, userMessage]);
-    form.reset({ prompt: '', type: 'react_component', imageDataUri: undefined });
+    form.reset({ prompt: '', imageDataUri: undefined });
     removeFile();
 
     let fileDataUri: string | undefined = undefined;
@@ -107,7 +105,7 @@ export function Generator() {
       });
     }
 
-    const response = await handleGenerate({ ...values, imageDataUri: fileDataUri });
+    const response = await handleChat({ ...values, imageDataUri: fileDataUri });
     
     if (response.error) {
       const errorMessage: Message = {
@@ -118,15 +116,15 @@ export function Generator() {
       setMessages((prev) => [...prev, errorMessage]);
       toast({
         variant: 'destructive',
-        title: 'Tạo mã thất bại',
+        title: 'Tạo phản hồi thất bại',
         description: response.error,
       });
-    } else if (response.code) {
+    } else if (response.response) {
       const aiMessage: Message = {
         id: `ai-${Date.now()}`,
         sender: 'ai',
-        content: response.code,
-        isCode: true,
+        content: response.response,
+        isCode: response.isCode,
       };
       setMessages((prev) => [...prev, aiMessage]);
     }
@@ -137,7 +135,7 @@ export function Generator() {
   function handleCopy(code: string) {
     navigator.clipboard.writeText(code);
     toast({
-      description: 'Đã sao chép mã vào clipboard!',
+      description: 'Đã sao chép vào clipboard!',
     });
   }
   
@@ -154,7 +152,7 @@ export function Generator() {
           Trợ Lý Mã AI
         </CardTitle>
         <CardDescription>
-          Trò chuyện với AI để tạo mã nguồn cho component hoặc endpoint. Tải ảnh lên để có kết quả trực quan hơn.
+          Trò chuyện với AI để hỏi đáp hoặc tạo mã nguồn. Tải ảnh lên để có kết quả trực quan hơn.
         </CardDescription>
       </CardHeader>
       <CardContent className="flex-1 overflow-y-auto p-4 space-y-4">
@@ -163,7 +161,7 @@ export function Generator() {
              <div className="text-center text-muted-foreground">
                 <Bot size={48} className="mx-auto mb-4" />
                 <h3 className="text-lg font-semibold">Bắt đầu cuộc trò chuyện</h3>
-                <p>Hãy mô tả component bạn muốn tạo, tải lên một ảnh, hoặc chọn một gợi ý bên dưới.</p>
+                <p>Hãy hỏi tôi bất cứ điều gì, mô tả component bạn muốn tạo, hoặc chọn một gợi ý bên dưới.</p>
              </div>
            </div>
         )}
@@ -191,7 +189,7 @@ export function Generator() {
                   </pre>
                 </div>
               ) : (
-                <p className="text-sm">{message.content}</p>
+                <p className="text-sm whitespace-pre-wrap">{message.content}</p>
               )}
             </div>
             {message.sender === 'user' && (
@@ -208,7 +206,7 @@ export function Generator() {
               </Avatar>
             <div className="rounded-lg p-3 bg-secondary flex items-center space-x-2">
               <Loader2 className="h-5 w-5 animate-spin" />
-              <span className="text-sm text-muted-foreground">AI đang viết mã...</span>
+              <span className="text-sm text-muted-foreground">AI đang suy nghĩ...</span>
             </div>
           </div>
         )}
@@ -245,7 +243,7 @@ export function Generator() {
                 <FormItem className="flex-1">
                   <FormControl>
                     <Textarea
-                      placeholder="Ví dụ: Thẻ giá sản phẩm với ba gói..."
+                      placeholder="Ví dụ: Tạo một nút bấm màu xanh..."
                       className="resize-none"
                       rows={1}
                       {...field}
