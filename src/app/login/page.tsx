@@ -11,8 +11,8 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input';
 
 const formSchema = z.object({
-  login: z.string().min(1, { message: 'Please enter your email or username.' }),
-  password: z.string().min(1, { message: 'Password is required.' }),
+  login: z.string().min(1, { message: 'Vui lòng nhập email hoặc tên đăng nhập của bạn.' }),
+  password: z.string().min(1, { message: 'Mật khẩu là bắt buộc.' }),
 });
 
 export default function LoginPage() {
@@ -35,8 +35,8 @@ export default function LoginPage() {
     <div className="flex items-center justify-center min-h-[calc(100vh-10rem)] py-12 px-4">
       <Card className="w-full max-w-md shadow-lg">
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-bold font-headline">Welcome Back!</CardTitle>
-          <CardDescription>Enter your credentials to access your account</CardDescription>
+          <CardTitle className="text-2xl font-bold font-headline">Đăng nhập</CardTitle>
+          <CardDescription>Nhập thông tin của bạn để truy cập tài khoản</CardDescription>
         </CardHeader>
         <CardContent>
           <Form {...form}>
@@ -46,9 +46,9 @@ export default function LoginPage() {
                 name="login"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Email or Username</FormLabel>
+                    <FormLabel>Email hoặc Tên đăng nhập</FormLabel>
                     <FormControl>
-                      <Input placeholder="name@example.com or your_username" {...field} />
+                      <Input placeholder="name@example.com hoặc ten_dang_nhap" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -59,7 +59,7 @@ export default function LoginPage() {
                 name="password"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Password</FormLabel>
+                    <FormLabel>Mật khẩu</FormLabel>
                     <FormControl>
                       <Input type="password" placeholder="••••••••" {...field} />
                     </FormControl>
@@ -68,14 +68,14 @@ export default function LoginPage() {
                 )}
               />
               <Button type="submit" className="w-full">
-                Login
+                Đăng nhập
               </Button>
             </form>
           </Form>
           <div className="mt-6 text-center text-sm">
-            Don&apos;t have an account?{' '}
+            Chưa có tài khoản?{' '}
             <Link href="/signup" className="underline font-medium text-primary hover:text-primary/90">
-              Sign up
+              Đăng ký
             </Link>
           </div>
         </CardContent>

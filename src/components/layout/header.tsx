@@ -20,10 +20,10 @@ export default function Header() {
             {isAuthenticated ? (
               <>
                 <Button variant="ghost" asChild>
-                  <Link href="/dashboard">Dashboard</Link>
+                  <Link href="/dashboard">Bảng điều khiển</Link>
                 </Button>
                 <Button variant="outline" size="sm" onClick={logout}>
-                  <LogOut className="mr-2 h-4 w-4" /> Logout
+                  <LogOut className="mr-2 h-4 w-4" /> Đăng xuất
                 </Button>
               </>
             ) : (

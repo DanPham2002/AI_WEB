@@ -13,22 +13,22 @@ import { PlaceHolderImages } from '@/lib/placeholder-images';
 const newFeatures = [
   {
     icon: <Cuboid className="h-8 w-8 text-primary" />,
-    title: 'Generate 3D Models',
-    description: 'Describe a 3D object and let the AI generate a model for you, ready to be used in your 3D scenes.',
+    title: 'Tạo Mô Hình 3D',
+    description: 'Mô tả một vật thể 3D và để AI tạo ra mô hình cho bạn, sẵn sàng để sử dụng trong các cảnh 3D của bạn.',
     image: PlaceHolderImages.find(img => img.id === 'feature-3d-model'),
     comingSoon: true,
   },
   {
     icon: <Film className="h-8 w-8 text-primary" />,
-    title: 'Create Animated Videos',
-    description: 'Turn your stories into animated videos. Describe the scene, characters, and actions to bring your vision to life.',
+    title: 'Tạo Video Hoạt Hình',
+    description: 'Biến câu chuyện của bạn thành video hoạt hình. Mô tả cảnh, nhân vật và hành động để biến tầm nhìn của bạn thành hiện thực.',
     image: PlaceHolderImages.find(img => img.id === 'feature-animation'),
     comingSoon: true,
   },
   {
     icon: <Wand2 className="h-8 w-8 text-primary" />,
-    title: 'Advanced UI/UX Tuning',
-    description: 'Go beyond code generation. Let the AI analyze your UI and suggest improvements for a better user experience.',
+    title: 'Tinh Chỉnh UI/UX Nâng Cao',
+    description: 'Vượt xa việc tạo mã nguồn. Hãy để AI phân tích giao diện người dùng của bạn và đề xuất các cải tiến để có trải nghiệm người dùng tốt hơn.',
     image: PlaceHolderImages.find(img => img.id === 'feature-ux-tuning'),
     comingSoon: true,
   },
@@ -62,9 +62,9 @@ export default function DashboardPage() {
   return (
     <div className="container max-w-7xl mx-auto py-8 px-4">
       <div className="space-y-2 mb-8">
-        <h1 className="text-3xl font-bold tracking-tight font-headline">Dashboard</h1>
+        <h1 className="text-3xl font-bold tracking-tight font-headline">Bảng điều khiển</h1>
         <p className="text-muted-foreground">
-          Welcome back, {user?.identifier}! Here you can use the AI-powered code generator.
+          Chào mừng trở lại, {user?.identifier}! Tại đây bạn có thể sử dụng trình tạo mã được hỗ trợ bởi AI.
         </p>
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">

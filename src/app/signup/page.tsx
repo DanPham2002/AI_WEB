@@ -12,12 +12,12 @@ import { Input } from '@/components/ui/input';
 
 const formSchema = z
   .object({
-    email: z.string().email({ message: 'Please enter a valid email.' }),
-    password: z.string().min(8, { message: 'Password must be at least 8 characters.' }),
+    email: z.string().email({ message: 'Vui lòng nhập một địa chỉ email hợp lệ.' }),
+    password: z.string().min(8, { message: 'Mật khẩu phải có ít nhất 8 ký tự.' }),
     confirmPassword: z.string(),
   })
   .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords don't match",
+    message: "Mật khẩu không khớp",
     path: ['confirmPassword'],
   });
 
@@ -42,8 +42,8 @@ export default function SignupPage() {
     <div className="flex items-center justify-center min-h-[calc(100vh-10rem)] py-12 px-4">
       <Card className="w-full max-w-md shadow-lg">
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-bold font-headline">Create an Account</CardTitle>
-          <CardDescription>Enter your details to start your journey with us</CardDescription>
+          <CardTitle className="text-2xl font-bold font-headline">Tạo tài khoản</CardTitle>
+          <CardDescription>Nhập thông tin của bạn để bắt đầu hành trình</CardDescription>
         </CardHeader>
         <CardContent>
           <Form {...form}>
@@ -66,7 +66,7 @@ export default function SignupPage() {
                 name="password"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Password</FormLabel>
+                    <FormLabel>Mật khẩu</FormLabel>
                     <FormControl>
                       <Input type="password" placeholder="••••••••" {...field} />
                     </FormControl>
@@ -79,7 +79,7 @@ export default function SignupPage() {
                 name="confirmPassword"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Confirm Password</FormLabel>
+                    <FormLabel>Xác nhận Mật khẩu</FormLabel>
                     <FormControl>
                       <Input type="password" placeholder="••••••••" {...field} />
                     </FormControl>
@@ -88,14 +88,14 @@ export default function SignupPage() {
                 )}
               />
               <Button type="submit" className="w-full">
-                Create Account
+                Tạo tài khoản
               </Button>
             </form>
           </Form>
           <div className="mt-6 text-center text-sm">
-            Already have an account?{' '}
+            Đã có tài khoản?{' '}
             <Link href="/login" className="underline font-medium text-primary hover:text-primary/90">
-              Login
+              Đăng nhập
             </Link>
           </div>
         </CardContent>
