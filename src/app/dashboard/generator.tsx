@@ -15,7 +15,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 
 const formSchema = z.object({
   prompt: z.string().min(1, {
-    message: 'Prompt cannot be empty.',
+    message: 'Nội dung không được để trống.',
   }),
   // Keeping type for the backend, but hiding it from the UI for the chat interface
   type: z.enum(['react_component', 'nestjs_endpoint']).default('react_component'),
@@ -29,10 +29,10 @@ interface Message {
 }
 
 const suggestionPrompts = [
-  'A pricing card component with three tiers',
-  'A contact form with name, email, and message fields',
-  'A hero section with a headline, subtitle, and CTA button',
-  'A user profile card with an avatar and details',
+  'Thẻ giá sản phẩm với ba gói',
+  'Biểu mẫu liên hệ với tên, email và tin nhắn',
+  'Phần hero với tiêu đề và nút kêu gọi hành động',
+  'Thẻ hồ sơ người dùng với ảnh đại diện và chi tiết',
 ];
 
 export function Generator() {
@@ -83,7 +83,7 @@ export function Generator() {
       setMessages((prev) => [...prev, errorMessage]);
       toast({
         variant: 'destructive',
-        title: 'Generation Failed',
+        title: 'Tạo mã thất bại',
         description: response.error,
       });
     } else if (response.code) {
@@ -102,7 +102,7 @@ export function Generator() {
   function handleCopy(code: string) {
     navigator.clipboard.writeText(code);
     toast({
-      description: 'Code copied to clipboard!',
+      description: 'Đã sao chép mã vào clipboard!',
     });
   }
   
@@ -116,7 +116,7 @@ export function Generator() {
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-xl font-bold font-headline">
           <Sparkles className="h-6 w-6 text-primary" />
-          AI Code Assistant
+          Trợ Lý Mã AI
         </CardTitle>
         <CardDescription>
           Trò chuyện với AI để tạo mã nguồn cho component hoặc endpoint.
@@ -144,7 +144,7 @@ export function Generator() {
                 <div className="relative">
                   <Button variant="ghost" size="icon" onClick={() => handleCopy(message.content)} className="absolute top-2 right-2 h-7 w-7">
                     <Copy className="h-4 w-4" />
-                    <span className="sr-only">Copy code</span>
+                    <span className="sr-only">Sao chép mã</span>
                   </Button>
                   <pre className="mt-2 w-full rounded-md bg-slate-950 p-4 overflow-x-auto text-sm">
                     <code className="text-white font-code">{message.content}</code>
@@ -197,7 +197,7 @@ export function Generator() {
                 <FormItem className="flex-1">
                   <FormControl>
                     <Textarea
-                      placeholder="e.g., A pricing card component with three tiers..."
+                      placeholder="Ví dụ: Thẻ giá sản phẩm với ba gói..."
                       className="resize-none"
                       rows={1}
                       {...field}
