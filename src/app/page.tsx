@@ -55,7 +55,7 @@ export default function Home() {
             <div className="grid gap-4 md:grid-cols-2 md:gap-16 items-center">
               <div className="space-y-4 text-center md:text-left">
                 <h1 className="lg:leading-tighter text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl xl:text-[3.4rem] 2xl:text-[3.75rem] font-headline">
-                  Nexus AI: Tương Lai Của Tự Động Hóa
+                  Lifetex AI: Tương Lai Của Tự Động Hóa
                 </h1>
                 <p className="mx-auto max-w-[700px] text-muted-foreground md:text-xl">
                   Trải nghiệm sức mạnh của trí tuệ nhân tạo để tối ưu hóa quy trình làm việc, tăng năng suất và thúc đẩy sự đổi mới.
@@ -90,7 +90,7 @@ export default function Home() {
                 <div className="inline-block rounded-lg bg-secondary px-3 py-1 text-sm">Tính Năng Vượt Trội</div>
                 <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl font-headline">Nền Tảng AI Toàn Diện Cho Doanh Nghiệp</h2>
                 <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                  Nexus AI cung cấp một bộ công cụ mạnh mẽ được thiết kế để giải quyết những thách thức lớn nhất trong hoạt động kinh doanh của bạn.
+                  Lifetex AI cung cấp một bộ công cụ mạnh mẽ được thiết kế để giải quyết những thách thức lớn nhất trong hoạt động kinh doanh của bạn.
                 </p>
               </div>
             </div>

@@ -45,6 +45,7 @@ export function Generator() {
   const { toast } = useToast();
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -60,8 +61,12 @@ export function Generator() {
   };
 
   useEffect(() => {
-    scrollToBottom();
+    // Only scroll when new messages are added, not on initial load
+    if(messages.length > 0 || isLoading) {
+      scrollToBottom();
+    }
   }, [messages, isLoading]);
+
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = event.target.files?.[0];
@@ -95,6 +100,9 @@ export function Generator() {
     setMessages((prev) => [...prev, userMessage]);
     form.reset({ prompt: '', imageDataUri: undefined });
     removeFile();
+
+    // A short delay to allow the UI to update before processing
+    await new Promise(resolve => setTimeout(resolve, 50));
 
     let fileDataUri: string | undefined = undefined;
     if (file) {
@@ -149,13 +157,13 @@ export function Generator() {
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-xl font-bold font-headline">
           <Sparkles className="h-6 w-6 text-primary" />
-          Trợ Lý Mã AI
+          Lifetex AI
         </CardTitle>
         <CardDescription>
           Trò chuyện với AI để hỏi đáp hoặc tạo mã nguồn. Tải ảnh lên để có kết quả trực quan hơn.
         </CardDescription>
       </CardHeader>
-      <CardContent className="flex-1 overflow-y-auto p-4 space-y-4">
+      <CardContent ref={scrollContainerRef} className="flex-1 overflow-y-auto p-4 space-y-4">
         {messages.length === 0 && !isLoading && (
            <div className="flex h-full items-center justify-center">
              <div className="text-center text-muted-foreground">

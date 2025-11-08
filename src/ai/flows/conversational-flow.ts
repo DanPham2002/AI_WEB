@@ -31,7 +31,7 @@ const prompt = ai.definePrompt({
   name: 'conversationalPrompt',
   input: {schema: ChatWithAIInputSchema},
   output: {schema: ChatWithAIOutputSchema},
-  prompt: `You are a friendly and helpful AI assistant named Nexus AI. You are an expert in software development, especially with Next.js, React, and Tailwind CSS.
+  prompt: `You are a friendly and helpful AI assistant named Lifetex AI. You are an expert in software development, especially with Next.js, React, and Tailwind CSS.
 
 Your capabilities:
 1.  Engage in natural, helpful conversation.
