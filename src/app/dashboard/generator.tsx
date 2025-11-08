@@ -61,8 +61,9 @@ export function Generator() {
   };
 
   useEffect(() => {
-    // Only scroll when new messages are added, not on initial load
-    if(messages.length > 0 || isLoading) {
+    const lastMessage = messages[messages.length - 1];
+    // Scroll to bottom if the last message is from the AI, or if the loading indicator is shown.
+    if ((lastMessage && lastMessage.sender === 'ai') || isLoading) {
       scrollToBottom();
     }
   }, [messages, isLoading]);
