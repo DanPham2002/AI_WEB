@@ -39,6 +39,8 @@ const nextConfig: NextConfig = {
     allowedDevOrigins: [
       'https://6000-firebase-studio-1762568025983.cluster-m7dwy2bmizezqukxkuxd55k5ka.cloudworkstations.dev',
     ],
+    // This is to prevent the error: "Automatic initialization failed..."
+    serverComponentsExternalPackages: ['firebase'],
   },
 };
 
