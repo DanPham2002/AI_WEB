@@ -2,8 +2,7 @@ module.exports = {
   apps: [
     {
       name: 'lifetex-ai-app',
-      script: 'node_modules/.bin/next',
-      args: 'start -p 3000',
+      script: '.next/standalone/server.js',
       exec_mode: 'fork',
       instances: 1,
       autorestart: true,
@@ -11,6 +10,7 @@ module.exports = {
       max_memory_restart: '1G',
       env: {
         NODE_ENV: 'development',
+        PORT: 3000,
       },
       env_production: {
         NODE_ENV: 'production',
